@@ -81,6 +81,8 @@ struct CoinModel: Identifiable, Codable {
     let lastUpdated: String?
     let sparkLine7D: SparkLine7Days?
     let priceChangePercentage24H: Double?
+    let numOfCoindsHeld: Double?
+    
     
     enum CodingKeys: String, CodingKey {
         case id, symbol, name, image
@@ -106,7 +108,87 @@ struct CoinModel: Identifiable, Codable {
         case lastUpdated = "last_updated"
         case sparkLine7D = "sparkline_in_7d"
         case priceChangePercentage24H = "price_change_percentage_24h_in_currency"
+        case numOfCoindsHeld
     }
+    
+    
+    func updateHoldings(ammount: Double) -> CoinModel {
+        return CoinModel(
+            id: id,
+            symbol: symbol,
+            name: name,
+            image: image,
+            currentPrice: currentPrice,
+            marketCap: marketCap,
+            marketCapRank: marketCapRank,
+            fullyDilutedValuation: fullyDilutedValuation,
+            totalVolume: totalVolume,
+            high24H: high24H,
+            low24H: low24H,
+            priceChange24H: priceChange24H,
+            pricePercentageChange24H: pricePercentageChange24H,
+            marketCapChange24H: marketCapChange24H,
+            marketCapChangePercentage24H: marketCapChangePercentage24H,
+            circulatingSupply: circulatingSupply,
+            maxSupply: maxSupply,
+            ath: ath,
+            athChangePercentage: athChangePercentage,
+            athDate: athDate,
+            atl: atl,
+            atlChangePercentage: atlChangePercentage,
+            atlDate: atlDate,
+            lastUpdated: lastUpdated,
+            sparkLine7D: sparkLine7D,
+            priceChangePercentage24H: priceChangePercentage24H,
+            numOfCoindsHeld: ammount
+        )
+    }
+    var currentHoldingsAmmount: Double {
+        return (numOfCoindsHeld ?? 0) * currentPrice
+    }
+    
+    var rank: Int {
+        return Int(marketCapRank ?? 0)
+    }
+    
+    //TODO: implement this method to get the data to create a UiImage that is the symbol of the current crypto coin
+    func getCoinImage(urlString: String) {
+        
+    }
+    
+#if DEBUG
+    static var previewCoin: CoinModel {
+        return CoinModel(
+            id: "bitcoin",
+            symbol: "btc",
+            name: "Bitcoin",
+            image: "https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png?1696501400",
+            currentPrice: 74_553.234354, // change this to test preview for price
+            marketCap: 1480457065950,
+            marketCapRank: 1,
+            fullyDilutedValuation: 1571854570933,
+            totalVolume: 77269603693,
+            high24H: 76244,
+            low24H: 73492,
+            priceChange24H: 1327.25,
+            pricePercentageChange24H: 1.805,
+            marketCapChange24H: 27596660275,
+            marketCapChangePercentage24H: 1.89947,
+            circulatingSupply: 19778928,
+            maxSupply: 21000000,
+            ath: 76244,
+            athChangePercentage: -1.69476,
+            athDate: "2024-11-06T20:56:23.198Z",
+            atl: 67.81,
+            atlChangePercentage: 110433.75202,
+            atlDate: "2013-07-06T00:00:00.000Z",
+            lastUpdated: "2024-11-07T10:11:43.139Z",
+            sparkLine7D: nil,
+            priceChangePercentage24H: 1.8049956958332427,
+            numOfCoindsHeld: 1.4
+        )
+    }
+#endif
 }
 
 struct SparkLine7Days: Codable {
