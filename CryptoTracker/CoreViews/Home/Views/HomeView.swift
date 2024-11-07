@@ -12,10 +12,12 @@ struct HomeView: View {
     
     var body: some View {
         ZStack {
+            Color.backgroundTheme
             VStack {
                 HomeViewHeader(showPortfolio: $showPortfolio)
                     .padding(.horizontal, 18)
                 Spacer(minLength: 0)
+                
             }
         }
     }
