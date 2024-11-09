@@ -36,7 +36,8 @@ extension CoinRowView {
 extension CoinRowView {
     var leftSide: some View {
         HStack {
-            Text("\(coin.rank)")
+            
+            Text(String(format: "%-3.d", coin.rank))
                 .font(.title3)
                 .safeAreaPadding(.trailing, 7)
             //placeholder for crypto coin image
@@ -55,7 +56,7 @@ extension CoinRowView {
                 .font(.title3)
                 .fontWeight(.semibold)
             
-            Text(coin.numOfCoindsHeld?.stringFormatted() ?? "0 ")
+            Text(coin.numOfCoinsHeld?.stringFormatted() ?? "0 ")
                 .font(.title3)
         }
         .frame(maxWidth: .infinity, alignment: .center)

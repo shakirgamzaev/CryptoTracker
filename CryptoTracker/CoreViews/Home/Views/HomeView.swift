@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     @State private var showPortfolio = false
+    @Environment(HomeViewModel.self) private var homeScreenVM
     
     var body: some View {
         ZStack {
@@ -16,13 +17,25 @@ struct HomeView: View {
             VStack {
                 HomeViewHeader(showPortfolio: $showPortfolio)
                     .padding(.horizontal, 18)
-                Spacer()
+                
+                HomeViewHeaderTitles(showPortfolio: showPortfolio)
+            
+                if !showPortfolio {
+                    ListOfAllCoinsView(allCoins: homeScreenVM.allCoins)
+                        .transition(.move(edge: .leading))
+                }
+                else {
+                    ListOfPortfolioCoins()
+                        .transition(.move(edge: .trailing))
+                }
+                
             }
         }
+        
     }
 }
 
-#Preview {
+#Preview(traits: .modifier(HomeVMPreviewModifier())) {
     NavigationStack {
         HomeView()
             .navigationTitle("hi")
