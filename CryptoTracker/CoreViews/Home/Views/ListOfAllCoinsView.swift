@@ -8,6 +8,8 @@
 import SwiftUI
 
 
+
+
 /// This view presents a list of all Coins that are retrieved
 struct ListOfAllCoinsView: View {
     let allCoins: [CoinModel]

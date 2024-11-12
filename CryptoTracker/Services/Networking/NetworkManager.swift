@@ -13,6 +13,27 @@ class NetworkManager {
     static let shared = NetworkManager()
     private init() {}
     
+    enum NetworkError: Error {
+        case badResponse(url: URL)
+        
+    }
+    
+    /// A method to get any type of Data from the url provided as its only argument.
+    ///
+    /// This method is generic, and its sole purpose is to retrieve any kind of data from any url. The return type is just a Data struct, which contains an array of raw bytes. It is up to the caller to determine what this data repsents: the called can use this data in whatever way they want.
+    func getResource(from url: URL) async throws -> Data {
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue("CG-k2bK2hNbEfKk782u42o2wTym", forHTTPHeaderField: "x-cg-demo-api-key")
+        request.addValue("application/json", forHTTPHeaderField: "accept")
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        let httpURLResponse = response as! HTTPURLResponse
+        guard httpURLResponse.statusCode >= 200 && httpURLResponse.statusCode < 300 else {
+            throw URLError(.badURL)
+        }
+        return data
+    }
     
     ///retrieves all Coin ids available on CoinGecko
     nonisolated func getAllCoinIds(url: URL) async throws -> [CoinNameModel] {
@@ -32,6 +53,9 @@ class NetworkManager {
         return ids
     }
     
+    /// this method selects 100 random coins from the entire list of all the coin ids returned from CoinGecko Api, converts them to Strings, and returns all of them as an array of Strings
+    ///
+    /// Because the call to NetworkManager.shared.getAllCoinIds returns thousands of coins, the app will actualyl ask for no more than a couple of hundred coins at a time to display, for both memory and network performance consideration
     nonisolated func getCoindIdStrings(coinIds: [CoinNameModel]) async -> [String] {
         var coinIdStrings: [String] = []
         for coinId in coinIds {

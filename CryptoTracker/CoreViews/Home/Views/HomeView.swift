@@ -12,23 +12,36 @@ struct HomeView: View {
     @Environment(HomeViewModel.self) private var homeScreenVM
     
     var body: some View {
+        @Bindable var homeViewVM = homeScreenVM
         ZStack {
             Color.backgroundTheme
-            VStack {
-                HomeViewHeader(showPortfolio: $showPortfolio)
-                    .padding(.horizontal, 18)
-                
-                HomeViewHeaderTitles(showPortfolio: showPortfolio)
-            
-                if !showPortfolio {
-                    ListOfAllCoinsView(allCoins: homeScreenVM.allCoins)
-                        .transition(.move(edge: .leading))
+            if homeScreenVM.isDownloading {
+                ProgressView()
+                    .scaleEffect(2.0, anchor: .center)
+            }
+            else {
+                VStack {
+                    HomeViewHeader(showPortfolio: $showPortfolio)
+                        .padding(.horizontal, 18)
+                    
+                    SearchFieldView(searchText: $homeViewVM.searchText)
+                        .safeAreaPadding(.top, 20)
+                        .safeAreaPadding(.bottom, 4)
+                        .padding(.horizontal)
+                        .onChange(of: homeViewVM.searchText) {homeViewVM.filterCoins()}
+                    
+                    HomeViewHeaderTitles(showPortfolio: showPortfolio)
+                    
+                    if !showPortfolio {
+                        ListOfAllCoinsView(allCoins: homeScreenVM.filteredCoins)
+                            .transition(.move(edge: .leading))
+                    }
+                    else {
+                        ListOfPortfolioCoins()
+                            .transition(.move(edge: .trailing))
+                    }
+                    
                 }
-                else {
-                    ListOfPortfolioCoins()
-                        .transition(.move(edge: .trailing))
-                }
-                
             }
         }
         

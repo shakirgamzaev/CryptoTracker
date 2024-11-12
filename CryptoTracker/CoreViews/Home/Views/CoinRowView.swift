@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+
+
+
 struct CoinRowView: View {
     let coin: CoinModel
     let showHoldingsColumn: Bool
@@ -41,8 +44,7 @@ extension CoinRowView {
                 .font(.title3)
                 .safeAreaPadding(.trailing, 7)
             //placeholder for crypto coin image
-            Circle()
-                .frame(width: 45, height: 45)
+            CircularCoinImageView(coin: coin)
             Text(coin.symbol.uppercased())
                 .font(.title2)
                 .bold()
