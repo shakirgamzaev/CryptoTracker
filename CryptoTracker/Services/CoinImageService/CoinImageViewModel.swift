@@ -62,7 +62,7 @@ class CoinImageDownload {
     
     
     private func downloadCoinImage() async throws -> UIImage {
-        let data = try await NetworkManager.shared.getResource(from: URL(string: coinModel.image)!)
+        let data = try await NetworkManager().getResource(from: URL(string: coinModel.image)!)
         let image = UIImage(data: data)
         if image == nil {
             throw DataError.badData

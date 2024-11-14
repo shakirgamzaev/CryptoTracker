@@ -13,16 +13,27 @@ import SwiftUI
 /// This view presents a list of all Coins that are retrieved
 struct ListOfAllCoinsView: View {
     let allCoins: [CoinModel]
+    @Environment(HomeViewModel.self) private var homeScreenVM
     
     var body: some View {
-        List {
-            ForEach(allCoins) { coin in
-                CoinRowView(coin: coin, showHoldingsColumn: false)
+        Group {
+            if !homeScreenVM.isDownloading {
+                List {
+                    ForEach(allCoins) { coin in
+                        CoinRowView(coin: coin, showHoldingsColumn: false)
+                    }
+                    .listRowInsets(.init(top: 15, leading: 10, bottom: 10, trailing: 15))
+                    
+                }
+                .safeAreaPadding(.top, 10)
+                .listStyle(.plain)
             }
-            .listRowInsets(.init(top: 15, leading: 10, bottom: 10, trailing: 15))
+            else {
+                ProgressView()
+                    .scaleEffect(1.9)
+            }
         }
-        .safeAreaPadding(.top, 10)
-        .listStyle(.plain)
+        .frame(maxHeight: .infinity)
     }
 }
 

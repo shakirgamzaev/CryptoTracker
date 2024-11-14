@@ -17,9 +17,14 @@ class HomeViewModel {
     var allCoins: [CoinModel]
     var filteredCoins: [CoinModel]
     var portfolioCoins: [CoinModel]
-    @ObservationIgnored let networkManager = NetworkManager.shared
+    //TODO: fetch market stats from the internet
+    var allMarketStats: [MarketStatistic] = []//MarketStatistic.previewListOfMarketStats
+    
+    //@ObservationIgnored let networkManager = NetworkManager.shared
     var isDownloading: Bool
     var searchText: String = ""
+    private let marketDataService = MarketDataService(url: URL(string: "https://api.coingecko.com/api/v3/global")!)
+    
     
     init(allCoins: [CoinModel], portfolioCoins: [CoinModel]) {
         self.allCoins = allCoins
@@ -27,8 +32,10 @@ class HomeViewModel {
         self.portfolioCoins = portfolioCoins
         self.isDownloading = true
         Task {
-            await getCoins()
-            self.isDownloading = false
+            async let coinsTask: Void = getCoins()//perhaps add async let so fetching happens parallell to market stats as well
+            async let marketData: Void = getMarketData()
+            await coinsTask
+            await marketData
         }
     }
     
@@ -54,13 +61,37 @@ class HomeViewModel {
     private func getCoins() async {
         do {
             print("DEBUG: netowrk call")
-            let coins = try await networkManager.getCoins()
+            let coins = try await NetworkManager().getCoins()
             self.allCoins = coins
             self.filteredCoins = coins
+            self.isDownloading = false
         } catch  {
             print(error.localizedDescription)
+            self.isDownloading = false
         }
     }
+    
+    private func getMarketData() async {
+        do {
+            let marketData = try await marketDataService.getMarketData()
+            
+            let marketCap = MarketStatistic(title: "Market Cap", value: marketData.marketCap, percentageChange: marketData.marketCapPercentageChange24H)
+            let volume = MarketStatistic(title: "24h Volume", value: marketData.totalVolumeInUSD)
+            let btcDominance = MarketStatistic(title: "BTC Dominance", value: marketData.btcDominance)
+            let portfolio = MarketStatistic(title: "Portfolio Value", value: "$0.00", percentageChange: 1)
+            allMarketStats.append(contentsOf: [
+                marketCap,
+                volume,
+                btcDominance,
+                portfolio
+            ])
+        }
+        catch {
+            print(error.localizedDescription)
+            
+        }
+    }
+    
 }
 
 #if DEBUG

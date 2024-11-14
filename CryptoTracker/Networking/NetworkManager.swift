@@ -10,8 +10,8 @@ import Foundation
 
 @MainActor
 class NetworkManager {
-    static let shared = NetworkManager()
-    private init() {}
+    //static let shared = NetworkManager()
+    init() {}
     
     enum NetworkError: Error {
         case badResponse(url: URL)

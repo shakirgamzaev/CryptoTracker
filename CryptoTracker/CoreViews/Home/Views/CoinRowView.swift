@@ -8,8 +8,6 @@
 import SwiftUI
 
 
-
-
 struct CoinRowView: View {
     let coin: CoinModel
     let showHoldingsColumn: Bool
@@ -39,17 +37,17 @@ extension CoinRowView {
 extension CoinRowView {
     var leftSide: some View {
         HStack {
-            
-            Text(String(format: "%-3.d", coin.rank))
+            Text(String(format: "%-2.d", coin.rank))
                 .font(.title3)
                 .safeAreaPadding(.trailing, 7)
             //placeholder for crypto coin image
             CircularCoinImageView(coin: coin)
             Text(coin.symbol.uppercased())
-                .font(.title2)
+                .font(.title3)
                 .bold()
             
         }
+        .frame(maxWidth: .infinity,alignment: .leading)
     }
     
     var middlePart: some View {
@@ -79,6 +77,6 @@ extension CoinRowView {
 }
 
 #Preview {
-    CoinRowView(coin: .previewCoin, showHoldingsColumn: true)
+    CoinRowView(coin: .previewCoin, showHoldingsColumn: false)
         .padding(.horizontal)
 }
