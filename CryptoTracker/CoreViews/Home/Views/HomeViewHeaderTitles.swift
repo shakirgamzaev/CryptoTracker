@@ -30,6 +30,6 @@ struct HomeViewHeaderTitles: View {
     }
 }
 
-#Preview {
+#Preview(traits: .modifier(HomeVMPreviewModifier())) {
     HomeViewHeaderTitles(showPortfolio: true)
 }

@@ -25,11 +25,16 @@ class LocalFileManager {
          await asyncSaveImageData(data: imageData, toFile: imageURL)
      }
     
-    func getImage(imageName: String, folderName: String) -> UIImage? {
+     func getImage(imageName: String, folderName: String) async -> UIImage? {
         createFolderIfNeeded(folderName: folderName)
         guard let imageURL = getImageURL(for: imageName, folderName: folderName),
               fileManager.fileExists(atPath: imageURL.path()) else {return nil}
-        return UIImage(contentsOfFile: imageURL.path())
+         let data = await asyncGetImageData(fromFile: imageURL)
+         return UIImage(data: data)
+    }
+    
+    nonisolated private func asyncGetImageData(fromFile url: URL) async -> Data {
+        return try! Data(contentsOf: url)
     }
     
     //off load file saving to other thread

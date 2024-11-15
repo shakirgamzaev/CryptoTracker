@@ -41,7 +41,7 @@ extension CoinRowView {
                 .font(.title3)
                 .safeAreaPadding(.trailing, 7)
             //placeholder for crypto coin image
-            CircularCoinImageView(coin: coin)
+            CoinImageView(coin: coin, size: 45)
             Text(coin.symbol.uppercased())
                 .font(.title3)
                 .bold()
@@ -76,7 +76,7 @@ extension CoinRowView {
     }
 }
 
-#Preview {
+#Preview(traits: .modifier(HomeVMPreviewModifier())) {
     CoinRowView(coin: .previewCoin, showHoldingsColumn: false)
         .padding(.horizontal)
 }

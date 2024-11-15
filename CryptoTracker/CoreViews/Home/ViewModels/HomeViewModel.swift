@@ -23,44 +23,60 @@ class HomeViewModel {
     //@ObservationIgnored let networkManager = NetworkManager.shared
     var isDownloading: Bool
     var searchText: String = ""
-    private let marketDataService = MarketDataService(url: URL(string: "https://api.coingecko.com/api/v3/global")!)
+    private let marketDataService: MarketDataService
     
     
-    init(allCoins: [CoinModel], portfolioCoins: [CoinModel]) {
+    init(allCoins: [CoinModel], portfolioCoins: [CoinModel], isPreview: Bool = false) {
         self.allCoins = allCoins
         self.filteredCoins = []
         self.portfolioCoins = portfolioCoins
         self.isDownloading = true
-        Task {
-            async let coinsTask: Void = getCoins()//perhaps add async let so fetching happens parallell to market stats as well
-            async let marketData: Void = getMarketData()
-            await coinsTask
-            await marketData
+        if isPreview == false {
+            print("DEBUG(HomeViewModel:36): init HomeViewModel main called")
+            self.marketDataService = MarketDataService(url: URL(string: "https://api.coingecko.com/api/v3/global")!)
+            Task {
+                async let coinsTask: Void = getCoins()//perhaps add async let so fetching happens parallell to market stats as well
+                async let marketData: Void = getMarketData()
+                await coinsTask
+                await marketData
+            }
+        }
+        else {
+            print("DEBUG(HomeViewModel:36): preview part called")
+            self.marketDataService = MarketDataService(url: URL(string: "https://api.coingecko.com/api/v3/global")!, true)
+            self.filteredCoins = allCoins
+            self.allMarketStats = MarketStatistic.previewListOfMarketStats
+            self.isDownloading = false
         }
     }
     
-     func filterCoins() {
+    func filteredCoins() async {
         guard !searchText.isEmpty else {
             self.filteredCoins = allCoins
             return
         }
         let searchCoinText = searchText.lowercased()
+        self.filteredCoins = await getFilteredCoins(allCoins: allCoins, searchText: searchCoinText)
+    }
+    
+    nonisolated private func getFilteredCoins(allCoins: [CoinModel],searchText: String) async -> [CoinModel] {
         let filteredCoins = allCoins.filter { coinModel in
             let coinModel_idName = coinModel.id.lowercased()
             let coinModelName = coinModel.name.lowercased()
             let coinModelSymbol = coinModel.symbol.lowercased()
-            return (coinModel_idName.contains(searchCoinText) ||
-                    coinModelName.contains(searchCoinText)    ||
-                    coinModelSymbol.contains(searchCoinText)
+            return (coinModel_idName.contains(searchText) ||
+                    coinModelName.contains(searchText)    ||
+                    coinModelSymbol.contains(searchText)
             )
         }
-        self.filteredCoins = filteredCoins
+        return filteredCoins
     }
+    
     
     /// this method uses a NetworkManager to get all the coins, and then sets the allCoins observable property
     private func getCoins() async {
         do {
-            print("DEBUG: netowrk call")
+            print("DEBUG: getCoins call")
             let coins = try await NetworkManager().getCoins()
             self.allCoins = coins
             self.filteredCoins = coins
@@ -96,6 +112,23 @@ class HomeViewModel {
 
 #if DEBUG
 extension HomeViewModel {
-    static let previewHomeViewModel = HomeViewModel(allCoins: [.previewCoin, .previewCoin], portfolioCoins: [.previewCoin])
+    static let previewHomeViewModel = HomeViewModel(
+        allCoins: [
+            .previewCoin,
+            .previewCoin,
+            .previewCoin2,
+            .previewCoin2,
+            .previewCoin,
+            .previewCoin,
+            .previewCoin2,
+            .previewCoin2,
+            .previewCoin,
+            .previewCoin,
+            .previewCoin2,
+            .previewCoin2
+        ],
+        portfolioCoins: [.previewCoin, .previewCoin2],
+        isPreview: true
+    )
 }
 #endif

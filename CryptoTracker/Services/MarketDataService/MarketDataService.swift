@@ -10,11 +10,8 @@ import Foundation
 @MainActor
 class MarketDataService {
     let url: URL
-    init(url: URL) {
+    init(url: URL, _ isPreview: Bool = false) {
         self.url = url
-        Task {
-            try await self.getMarketData()
-        }
     }
     
     private func getGlobalMarketData(fromURL url: URL) async throws -> Data {
@@ -23,6 +20,7 @@ class MarketDataService {
     }
     
     func getMarketData() async throws -> MarketData {
+        print("DEBUG(MarketDataService:23) getMarketData called")
         let globalMarketData = try await getGlobalMarketData(fromURL: url)
         let decoder = JSONDecoder()
         let globalMarketModel = try decoder.decode(GlobalData.self, from: globalMarketData)

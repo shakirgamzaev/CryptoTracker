@@ -11,6 +11,7 @@ import SwiftUI
 /// a header that sits at the top of the Home View, from which navigation to portfolio view happens
 struct HomeViewHeader: View {
     @Binding var showPortfolio: Bool
+    @Binding var showEditPortfolio: Bool
     
     var body: some View {
         HStack {
@@ -18,6 +19,11 @@ struct HomeViewHeader: View {
                 .animation(nil, value: showPortfolio)
                 .background {
                     AnimatedPulseVIew(animate: $showPortfolio)
+                }
+                .onTapGesture {
+                    if showPortfolio {
+                        showEditPortfolio = true
+                    }
                 }
             
             Spacer()
@@ -40,9 +46,9 @@ struct HomeViewHeader: View {
     }
 }
 
-#Preview {
+#Preview(traits: .modifier(HomeVMPreviewModifier())) {
     @Previewable @State var show = false
     
-    HomeViewHeader(showPortfolio: $show)
+    HomeViewHeader(showPortfolio: $show, showEditPortfolio: .constant(false))
         .padding(.horizontal)
 }

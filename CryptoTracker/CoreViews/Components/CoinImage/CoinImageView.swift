@@ -8,20 +8,22 @@
 import SwiftUI
 
 
-struct CircularCoinImageView: View {
+struct CoinImageView: View {
     let coin: CoinModel
-    @State private var coinImageVM: CoinImageDownload
+    @State private var coinImageVM: CoinImageViewModel
+    let size: CGFloat
     
-    init(coin: CoinModel) {
+    init(coin: CoinModel, size: CGFloat) {
         self.coin = coin
-        _coinImageVM = State(wrappedValue: CoinImageDownload(coinModel: coin))
+        _coinImageVM = State(wrappedValue: CoinImageViewModel(coinModel: coin))
+        self.size = size
     }
     var body: some View {
         if let image = coinImageVM.image {
             Image(uiImage: image)
                 .resizable()
                 .scaledToFill()
-                .frame(width: 45, height: 45)
+                .frame(width: size, height: size)
                 .clipShape(Circle())
         }
         else if coinImageVM.error != nil {
@@ -42,5 +44,5 @@ struct CircularCoinImageView: View {
 }
 
 #Preview {
-    CircularCoinImageView(coin: .previewCoin)
+    CoinImageView(coin: .previewCoin, size: 45)
 }

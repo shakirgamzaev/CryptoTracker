@@ -35,6 +35,17 @@ class NetworkManager {
         return data
     }
     
+    func getCoinImage(from url: URL) async throws -> Data {
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        let (data, response) = try await URLSession.shared.data(for: request)
+        let httpURLResponse = response as! HTTPURLResponse
+        guard httpURLResponse.statusCode >= 200 && httpURLResponse.statusCode < 300 else {
+            throw URLError(.badURL)
+        }
+        return data
+    }
+    
     ///retrieves all Coin ids available on CoinGecko
     nonisolated func getAllCoinIds(url: URL) async throws -> [CoinNameModel] {
         

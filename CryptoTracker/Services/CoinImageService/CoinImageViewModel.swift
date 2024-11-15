@@ -10,9 +10,8 @@ import SwiftUI
 
 @MainActor
 @Observable
-class CoinImageDownload {
+class CoinImageViewModel {
     var image: UIImage?
-    @ObservationIgnored
     private let coinModel: CoinModel
     var error: Error? = nil
     var isDownloading: Bool
@@ -31,12 +30,12 @@ class CoinImageDownload {
         do {
             //TODO: if the image is not in the file system, download it, else simply retrieve it.
             let fileManager = LocalFileManager.shared
-            let imageData = fileManager.getImage(imageName: coinModel.id, folderName: "CoinImages")
+            let imageData = await fileManager.getImage(imageName: coinModel.coinId, folderName: "CoinImages")
             // if we did not get the UiImage from a file, it means that we need make the network call to get the image data for a coin
             if imageData == nil {
                 //print("DEBUG: get image from Network")
                 let image = try await self.downloadCoinImage()
-                await fileManager.saveImage(image: image, imageName: coinModel.id, folderName: "CoinImages")
+                await fileManager.saveImage(image: image, imageName: coinModel.coinId, folderName: "CoinImages")
                 self.image = image
                 self.isDownloading = false
             }
@@ -62,7 +61,7 @@ class CoinImageDownload {
     
     
     private func downloadCoinImage() async throws -> UIImage {
-        let data = try await NetworkManager().getResource(from: URL(string: coinModel.image)!)
+        let data = try await NetworkManager().getCoinImage(from: URL(string: coinModel.image)!)
         let image = UIImage(data: data)
         if image == nil {
             throw DataError.badData
@@ -71,7 +70,7 @@ class CoinImageDownload {
     }
 }
 
-extension CoinImageDownload {
+extension CoinImageViewModel {
     enum DataError: Error {
         case badData
     }

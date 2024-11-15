@@ -60,7 +60,8 @@ import SwiftUI
 
 
 struct CoinModel: Identifiable, Codable {
-    let id: String
+    let id = UUID().uuidString
+    let coinId: String
     let symbol: String
     let name: String
     let image: String
@@ -86,7 +87,7 @@ struct CoinModel: Identifiable, Codable {
     
     
     enum CodingKeys: String, CodingKey {
-        case id
+        case coinId = "id"
         case symbol
         case name
         case image
@@ -126,7 +127,7 @@ struct CoinModel: Identifiable, Codable {
 extension CoinModel {
     func updateHoldings(ammount: Double) -> CoinModel {
        let coinModel = CoinModel(
-       id: id,
+        coinId: coinId,
        symbol: symbol,
        name: name,
        image: image,
@@ -172,11 +173,42 @@ extension CoinModel {
 #if DEBUG
     static var previewCoin: CoinModel {
         return CoinModel(
-            id: "bitcoin",
+            coinId: "bitcoin",
             symbol: "btc",
             name: "Bitcoin",
             image: "https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png?1696501400",
             currentPrice: 74_553.234354, // change this to test preview for price
+            marketCap: 1480457065950,
+            marketCapRank: 1,
+            fullyDilutedValuation: 1571854570933,
+            totalVolume: 77269603693,
+            high24H: 76244,
+            low24H: 73492,
+            priceChange24H: 1327.25,
+            pricePercentageChange24H: 1.805,
+            marketCapChange24H: 27596660275,
+            marketCapChangePercentage24H: 1.89947,
+            circulatingSupply: 19778928,
+            maxSupply: 21000000,
+            ath: 76244,
+            athChangePercentage: -1.69476,
+            athDate: "2024-11-06T20:56:23.198Z",
+            atl: 67.81,
+            atlChangePercentage: 110433.75202,
+            atlDate: "2013-07-06T00:00:00.000Z",
+            lastUpdated: "2024-11-07T10:11:43.139Z",
+            sparkLine7D: nil,
+            priceChangePercentage24HInCurrency: 1.8049956958332427,
+            numOfCoinsHeld: 1.4
+        )
+    }
+    static var previewCoin2: CoinModel {
+        return CoinModel(
+            coinId: "ethereum",
+            symbol: "eth",
+            name: "Ethereum",
+            image: "https://coin-images.coingecko.com/coins/images/279/large/ethereum.png?1696501628",
+            currentPrice: 44_333.234354, // change this to test preview for price
             marketCap: 1480457065950,
             marketCapRank: 1,
             fullyDilutedValuation: 1571854570933,
