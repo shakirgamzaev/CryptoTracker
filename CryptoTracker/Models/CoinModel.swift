@@ -158,7 +158,7 @@ extension CoinModel {
         return coinModel
    }
     var currentHoldingsAmmount: Double {
-       return (numOfCoinsHeld ?? 0) * currentPrice
+        return (numOfCoinsHeld ?? 0) * currentPrice
    }
    
    var rank: Int {
@@ -177,7 +177,7 @@ extension CoinModel {
             symbol: "btc",
             name: "Bitcoin",
             image: "https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png?1696501400",
-            currentPrice: 74_553.234354, // change this to test preview for price
+            currentPrice: 74_553.2343, // change this to test preview for price
             marketCap: 1480457065950,
             marketCapRank: 1,
             fullyDilutedValuation: 1571854570933,
@@ -210,7 +210,7 @@ extension CoinModel {
             image: "https://coin-images.coingecko.com/coins/images/279/large/ethereum.png?1696501628",
             currentPrice: 44_333.234354, // change this to test preview for price
             marketCap: 1480457065950,
-            marketCapRank: 1,
+            marketCapRank: 2,
             fullyDilutedValuation: 1571854570933,
             totalVolume: 77269603693,
             high24H: 76244,
@@ -244,3 +244,14 @@ extension CoinModel {
 struct SparkLine7Days: Codable {
     let price: [Double]?
 }
+extension SparkLine7Days: Hashable {}
+
+extension CoinModel: Equatable {
+    static func == (lhs: CoinModel, rhs: CoinModel) -> Bool {
+        return lhs.coinId == rhs.coinId && lhs.currentHoldingsAmmount == rhs.currentHoldingsAmmount
+    }
+    
+    
+}
+
+extension CoinModel: Hashable {}

@@ -77,6 +77,6 @@ extension CoinRowView {
 }
 
 #Preview(traits: .modifier(HomeVMPreviewModifier())) {
-    CoinRowView(coin: .previewCoin, showHoldingsColumn: false)
+    CoinRowView(coin: .previewCoin, showHoldingsColumn: true)
         .padding(.horizontal)
 }

@@ -9,25 +9,23 @@ import SwiftUI
 
 struct PortfolioEditView: View {
     @Environment(HomeViewModel.self) private var homeScreenVM
-    @State private var portfolioScreenVM = PortfolioScreenVM()
+    @State private var portfolioVM = PortfolioScreenVM()
     
     var body: some View {
         @Bindable var homeVM = homeScreenVM
         NavigationStack {
             VStack(spacing: 20.0) {
-                SearchFieldView(searchText: $homeVM.searchText)
+                SearchFieldView(searchText: $portfolioVM.searchText)
                     .padding(.horizontal)
-                    .onChange(of: homeScreenVM.searchText) {
-                        Task {
-                            await homeScreenVM.filteredCoins()
-                        }
+                    .onChange(of: portfolioVM.searchText) { _, newValue in
+                        filterCoins(searchText: newValue)
                     }
                 
-                ListOfCoinsView(portfolioVM: portfolioScreenVM)
+                ListOfCoinsView(portfolioVM: portfolioVM)
                     .safeAreaPadding(.bottom, 10)
                 
-                if let selectedCoin = portfolioScreenVM.selectedCoin {
-                    InputFieldsView(portfolioVM: portfolioScreenVM, selectedCoin: selectedCoin)
+                if let selectedCoin = portfolioVM.selectedCoin {
+                    InputFieldsView(portfolioVM: portfolioVM, selectedCoin: selectedCoin)
                         .padding(.horizontal)
                 }
                 Spacer()
@@ -36,6 +34,15 @@ struct PortfolioEditView: View {
             .navigationTitle("Edit Portfolio")
             .toolbar {
                 toolBarButtons
+            }
+            .onDisappear {
+                homeScreenVM.filteredCoins = homeScreenVM.allCoins
+            }
+            .onChange(of: portfolioVM.selectedCoin) {
+                if let coin = $1 {
+                    portfolioVM.ammountOfCoinsString = coin.numOfCoinsHeld == nil ? "" : "\(coin.numOfCoinsHeld!)"
+                }
+                
             }
         }
     }
@@ -47,18 +54,43 @@ extension PortfolioEditView {
     var toolBarButtons: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
             HStack {
+                Image(systemName: "checkmark")
+                    .opacity(portfolioVM.showCheckMark ? 1.0 : 0.0)
                 Button {
                     //save Coin into user portfolio
+                    portfolioVM.saveCoinToPortfolio(coin: portfolioVM.selectedCoin!, vm: homeScreenVM)
                 } label: {
                     Text("SAVE")
                         .font(.title3)
                         .fontWeight(.semibold)
                 }
-                .opacity(portfolioScreenVM.ammountOfCoins.isEmpty ? 0.0 : 1.0)
+                .opacity(opacitySaveButton)
             }
         }
         ToolbarItem(placement: .topBarLeading) {
             XMarkButton()
+        }
+    }
+}
+
+extension PortfolioEditView {
+    var opacitySaveButton: CGFloat {
+        if let coin = portfolioVM.selectedCoin {
+            let opacity = /*coin.currentHoldingsAmmount != Double(portfolioVM.ammountOfCoinsString) &&*/ !portfolioVM.ammountOfCoinsString.isEmpty ? 1.0 : 0.0
+            return opacity
+        }
+        return 0.0
+    }
+    
+    private func filterCoins(searchText: String) {
+        if searchText == "" {
+            portfolioVM.selectedCoin = nil
+            homeScreenVM.filteredCoins = homeScreenVM.allCoins
+        }
+        else {
+            Task {
+                await homeScreenVM.filterAndSortCoins(searchText: portfolioVM.searchText)
+            }
         }
     }
 }

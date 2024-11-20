@@ -18,7 +18,10 @@ struct ListOfAllCoinsView: View {
             if !homeScreenVM.isDownloading {
                 List {
                     ForEach(allCoins) { coin in
-                        CoinRowView(coin: coin, showHoldingsColumn: false)
+                        NavigationLink(value: coin) {
+                            CoinRowView(coin: coin, showHoldingsColumn: false)
+                        }
+                        //CoinRowView(coin: coin, showHoldingsColumn: false)
                     }
                     .listRowInsets(.init(top: 15, leading: 10, bottom: 10, trailing: 15))
                     

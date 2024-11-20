@@ -27,7 +27,7 @@ struct InputFieldsView: View {
                     .bold()
                     .font(.title3)
                 Spacer()
-                TextField("ammount", text: $portfolioVM.ammountOfCoins, prompt: Text("Ex: 1.42"))
+                TextField("ammount", text: $portfolioVM.ammountOfCoinsString, prompt: Text("Ex: 1.42"))
                     .multilineTextAlignment(.trailing)
                     .keyboardType(.decimalPad)
 
@@ -44,7 +44,7 @@ struct InputFieldsView: View {
 
 extension InputFieldsView {
     var totalAmmountInDollars: String {
-        let ammount = Double(portfolioVM.ammountOfCoins)
+        let ammount = Double(portfolioVM.ammountOfCoinsString)
         if let ammount {
             return Double(ammount * selectedCoin.currentPrice).currencyFormatted()
         }

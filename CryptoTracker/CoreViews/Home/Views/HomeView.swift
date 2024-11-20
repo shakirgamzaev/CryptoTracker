@@ -12,6 +12,7 @@ struct HomeView: View {
     @Environment(HomeViewModel.self) private var homeScreenVM
     @State private var showEditPortfolioView = false
     
+    
     var body: some View {
         @Bindable var homeViewVM = homeScreenVM
         ZStack {
@@ -28,7 +29,7 @@ struct HomeView: View {
                     .padding(.horizontal)
                     .onChange(of: homeViewVM.searchText) {
                         Task {
-                            await homeViewVM.filteredCoins()
+                            await homeViewVM.filterAndSortCoins(searchText: homeViewVM.searchText)
                         }
                     }
                 
@@ -48,6 +49,9 @@ struct HomeView: View {
                     // PortfolioEditView    
                     PortfolioEditView()
                 }
+            }
+            .navigationDestination(for: CoinModel.self) { coin in
+                CoinDetailView(coin: coin)
             }
         }
         
