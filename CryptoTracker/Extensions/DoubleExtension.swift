@@ -38,29 +38,29 @@ extension Double {
     }
     
     func formattedWithAbbreviation() -> String {
-        let sign = self < 0 ? "-" : ""
-        switch self {
-        case  0..<1000:
-            return sign + self.currencyFormatted()
+        let selfAbs = abs(self)
+        switch selfAbs {
+        case 0...1000:
+            return  self.currencyFormatted()
             
-        case 1000..<1_000_000:
+        case 1000...1_000_000:
             let number = self / 1000
-            return sign + number.currencyFormatted() + "K"
+            return  number.currencyFormatted() + "K"
             
-        case 1_000_000..<1_000_000_000:
+        case 1_000_000...1_000_000_000:
             let number = self / 1_000_000
-            return sign + number.currencyFormatted() + "M"
+            return  number.currencyFormatted() + "M"
             
-        case 1_000_000_000..<1_000_000_000_000:
+        case 1_000_000_000...1_000_000_000_000:
             let number = self / 1_000_000_000
-            return sign + number.currencyFormatted() + "Bn"
+            return  number.currencyFormatted() + "Bn"
             
-        case 1_000_000_000_000..<1_000_000_000_000_000:
+        case 1_000_000_000_000...1_000_000_000_000_000:
             let number = self / 1_000_000_000_000
-            return sign + number.currencyFormatted() + "Tr"
+            return  number.currencyFormatted() + "Tr"
             
         default:
-            return sign + self.currencyFormatted()
+            return  self.currencyFormatted()
         }
     }
 }

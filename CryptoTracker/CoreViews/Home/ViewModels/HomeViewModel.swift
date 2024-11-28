@@ -16,15 +16,15 @@ import SwiftUI
 class HomeViewModel {
     var allCoins: [CoinModel]
     var filteredCoins: [CoinModel]
-    var portfolioCoins: [CoinModel] /*{
+    var portfolioCoins: [CoinModel] {
         didSet {
             Task {
                 await self.getMarketData()
             }
         }
-    }*/
+    }
     //TODO: fetch market stats from the internet
-    var allMarketStats: [MarketStatistic] = []//MarketStatistic.previewListOfMarketStats
+    var allMarketStats: [MarketStatistic] = []
     var isDownloading: Bool
     var searchText: String = ""
     @ObservationIgnored private var portfolioService: PersistentCoinService
@@ -49,13 +49,13 @@ class HomeViewModel {
             self.portfolioService = PersistentCoinService(false)
             print("DEBUG(HomeViewModel:36): init HomeViewModel main called")
             self.marketDataService = MarketDataService(url: URL(string: "https://api.coingecko.com/api/v3/global")!)
-//            Task {
-//                async let coinsTask: Void = getCoins()//perhaps add async let so fetching happens parallell to market stats as well
-//                async let marketData: Void = getMarketData()
-//                await coinsTask
-//                await marketData
-//                fetchPortfolioCoins()
-//            }
+            Task {
+                async let coinsTask: Void = getCoins()//perhaps add async let so fetching happens parallell to market stats as well
+                async let marketData: Void = getMarketData()
+                await coinsTask
+                await marketData
+                fetchPortfolioCoins()
+            }
         }
         else {
             self.portfolioService = PersistentCoinService(true)

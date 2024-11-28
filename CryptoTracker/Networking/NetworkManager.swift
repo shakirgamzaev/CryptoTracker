@@ -18,9 +18,9 @@ class NetworkManager {
         
     }
     
-    /// A method to get any type of Data from the url provided as its only argument.
+    /// A method to get any type of Data from the url provided as its only argument. It works only if the webpage is for CoinGecko api urls
     ///
-    /// This method is generic, and its sole purpose is to retrieve any kind of data from any url. The return type is just a Data struct, which contains an array of raw bytes. It is up to the caller to determine what this data repsents: the called can use this data in whatever way they want.
+    /// This method is generic, and its sole purpose is to retrieve any kind of data from any url, but on the CoinGecko website. The return type is just a Data struct, which contains an array of raw bytes. It is up to the caller to determine what this data repsents: the called can use this data in whatever way they want.
     func getResource(from url: URL) async throws -> Data {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"

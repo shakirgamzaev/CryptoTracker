@@ -21,7 +21,6 @@ struct ListOfAllCoinsView: View {
                         NavigationLink(value: coin) {
                             CoinRowView(coin: coin, showHoldingsColumn: false)
                         }
-                        //CoinRowView(coin: coin, showHoldingsColumn: false)
                     }
                     .listRowInsets(.init(top: 15, leading: 10, bottom: 10, trailing: 15))
                     
@@ -39,5 +38,7 @@ struct ListOfAllCoinsView: View {
 }
 
 #Preview(traits: .modifier(HomeVMPreviewModifier())) {
-    ListOfAllCoinsView(allCoins: HomeViewModel.previewHomeViewModel.allCoins)
+    NavigationStack {
+        ListOfAllCoinsView(allCoins: HomeViewModel.previewHomeViewModel.allCoins)
+    }
 }

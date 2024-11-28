@@ -10,11 +10,17 @@ import SwiftUI
 @main
 struct CryptoTrackerApp: App {
     @State private var homeViewModel = HomeViewModel(allCoins: [], portfolioCoins: [])
+    @State private var dismissLaunchScreen = false
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(homeViewModel)
+            ZStack {
+                ContentView()
+                    .environment(homeViewModel)
+                if !dismissLaunchScreen {
+                    LaunchScreenView(dismissLauncScreen: $dismissLaunchScreen)
+                }
+            }
         }
     }
 }
